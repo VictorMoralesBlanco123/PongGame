@@ -4,6 +4,22 @@
 
 using namespace std;
 
+int paddle_hit(int ball_x, int ball_y, int ball_radius, int ball_speed_x, int paddleHeight, int paddle_y)
+{
+    bool within_bounds = ball_y + ball_radius >= paddle_y - 1 && ball_y + ball_radius <= paddle_y + paddleHeight + 1;
+    if (ball_x + ball_radius >= 875 && within_bounds)
+    {
+        ball_speed_x *= -1;
+    }
+
+    if (ball_x - ball_radius <= 25 && within_bounds)
+    {
+        ball_speed_x *= -1;
+    }
+
+    return ball_speed_x;
+}
+
 int main()
 {
 
@@ -31,21 +47,22 @@ int main()
         ball_x += ball_speed_x;
         ball_y += ball_speed_y;
 
-
         // Ball goes left and right
 
         if (ball_x + ball_radius >= screenWidth)
         {
             ball_speed_x *= -1;
             player1_score += 1;
-            cout << "player1 " << player1_score << endl;
+            ball_x = 450;
+            ball_y = 200;
         }
-        
+
         if (ball_x - ball_radius <= 0)
         {
             ball_speed_x *= -1;
             player2_score += 1;
-            cout << "player2 " << player2_score << endl;
+            ball_x = 450;
+            ball_y = 200;
         }
 
         // ball goes up and down
@@ -75,10 +92,39 @@ int main()
         }
 
         DrawCircle(ball_x, ball_y, ball_radius, WHITE);
-        DrawRectangle(15, paddle1_y, paddleWidth, paddleHeight, WHITE);
-        DrawRectangle(875, paddle2_y, paddleWidth, paddleHeight, WHITE);
+        DrawRectangle(15, paddle1_y, paddleWidth, paddleHeight, BLUE);
+        DrawRectangle(875, paddle2_y, paddleWidth, paddleHeight, RED);
 
-        // DrawText();
+        ball_speed_x = paddle_hit(ball_x, ball_y, ball_radius, ball_speed_x, paddleHeight, paddle1_y);
+        ball_speed_x = paddle_hit(ball_x, ball_y, ball_radius, ball_speed_x, paddleHeight, paddle2_y);
+
+        if (player1_score < 3 || player2_score < 3)
+        {
+            DrawText(TextFormat("%d : %d", player1_score, player2_score), 400, 300, 40, GREEN);
+        }
+
+        if (player1_score == 3 || player2_score == 3)
+        {
+            if (player1_score == 3)
+            {
+                DrawText("Blue Wins", 350, 100, 40, BLUE);
+            }
+            else
+            {
+                DrawText("Red Wins", 350, 100, 40, RED);
+            }
+            DrawText("Press SPACE to restart game", 150, 400, 40, GREEN);
+            ball_speed_x = 0;
+            ball_speed_y = 0;
+        }
+
+        if (IsKeyDown(KEY_SPACE))
+        {
+            player1_score = 0;
+            player2_score = 0;
+            ball_speed_x = 5;
+            ball_speed_y = 5;
+        }
 
         EndDrawing();
     }
