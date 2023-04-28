@@ -95,10 +95,6 @@ int main()
             }
         }
 
-        // These two lines move the ball
-        ball_x += ball_speed_x;
-        ball_y += ball_speed_y;
-
         // Player 1's score counter
         if (ball_x + ball_radius >= screenWidth)
         {
@@ -154,6 +150,10 @@ int main()
 
         ball_speed_x = paddleHit(paddle1_y);
         ball_speed_x = paddleHit(paddle2_y);
+
+        // These two lines move the ball
+        ball_x += ball_speed_x;
+        ball_y += ball_speed_y;
 
         // This is the scoreboard
         if (player1_score < 3 || player2_score < 3)
